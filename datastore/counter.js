@@ -17,12 +17,11 @@ const zeroPaddedNumber = (num) => {
 
 const readCounter = (callback) => {
   fs.readFile(exports.counterFile, (err, fileData) => {
-
     if (err) {
       console.log(`error: ${err}`);
-      callback(null, 0);
+      callback(err, 0);
     } else {
-      console.log(`read file data: ${Number(fileData)}`);
+      console.log(`counter read: ${Number(fileData)}`);
       callback(null, Number(fileData));
     }
   });
@@ -30,11 +29,11 @@ const readCounter = (callback) => {
 
 const writeCounter = (count, callback) => {
   var counterString = zeroPaddedNumber(count);
-  console.log(`writing: ${counterString} to ${exports.counterFile}`);
   fs.writeFile(exports.counterFile, counterString, (err) => {
     if (err) {
       throw ('error writing counter');
     } else {
+      console.log(`counter wrote: ${counterString}`);
       callback(null, counterString);
     }
   });

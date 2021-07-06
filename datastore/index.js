@@ -14,6 +14,7 @@ exports.create = (text, callback) => {
       if (err) {
         return console.error(`Error writing ${id}.txt`);
       }
+      console.log(`Wrote ${id}.txt contents: "${text}"`);
       callback(null, { id, text });
     });
   });
@@ -25,7 +26,6 @@ exports.readAll = (callback) => {
     if (err) {
       return console.log(`Error reading files in ${exports.dataDir}.`);
     }
-    console.log(files);
     var data = _.map(files, (text, id) => {
       return { id: text.split('.')[0], text: text.split('.')[0] };
     });
