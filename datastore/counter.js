@@ -56,7 +56,6 @@ exports.getNextUniqueId = (callback) => {
       });
     }
   });
-  return zeroPaddedNumber(counter);
 };
 
 // Configuration -- DO NOT MODIFY //////////////////////////////////////////////
