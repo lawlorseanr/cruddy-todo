@@ -47,13 +47,26 @@ exports.readOne = (id, callback) => {
 };
 
 exports.update = (id, text, callback) => {
-  var item = items[id];
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    items[id] = text;
-    callback(null, { id, text });
-  }
+  var todoDir = path.join(exports.dataDir, `${id}.txt`);
+  fs.readFile(todoDir, (err, rawText) => {
+    if (err) {
+      return callback(new Error(`No item with id: ${id}`));
+    }
+    fs.writeFile(todoDir, text, (err) => {
+      if (err) {
+        return callback(new Error(`Error updating id: ${id}`));
+      }
+      callback(err, {id, text} );
+    });
+  });
+
+  // var item = items[id];
+  // if (!item) {
+  //   callback(new Error(`No item with id: ${id}`));
+  // } else {
+  //   items[id] = text;
+  //   callback(null, { id, text });
+  // }
 };
 
 exports.delete = (id, callback) => {

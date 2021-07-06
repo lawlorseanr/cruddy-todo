@@ -158,7 +158,7 @@ describe('todos', () => {
       todos.create('original todo', done);
     });
 
-    xit('should not change the counter', (done) => {
+    it('should not change the counter', (done) => {
       todos.update('00001', 'updated todo', (err, todo) => {
         const counterFileContents = fs.readFileSync(counter.counterFile).toString();
         expect(counterFileContents).to.equal('00001');
@@ -166,7 +166,7 @@ describe('todos', () => {
       });
     });
 
-    xit('should update the todo text for existing todo', (done) => {
+    it('should update the todo text for existing todo', (done) => {
       const todoId = '00001';
       const updatedTodoText = 'updated todo';
       todos.update(todoId, updatedTodoText, (err, todo) => {
@@ -176,7 +176,7 @@ describe('todos', () => {
       });
     });
 
-    xit('should not create a new todo for non-existant id', (done) => {
+    it('should not create a new todo for non-existant id', (done) => {
       const initalTodoCount = fs.readdirSync(todos.dataDir).length;
       todos.update('00017', 'bad id', (err, todo) => {
         const currentTodoCount = fs.readdirSync(todos.dataDir).length;
