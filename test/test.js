@@ -141,7 +141,7 @@ describe('todos', () => {
       });
     });
 
-    xit('should find a todo by id', (done) => {
+    it('should find a todo by id', (done) => {
       const todoText = 'buy chocolate';
       todos.create(todoText, (err, createdTodo) => {
         const id = createdTodo.id;
