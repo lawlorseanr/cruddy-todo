@@ -27,7 +27,13 @@ exports.readAll = (callback) => {
       return console.log(`Error reading files in ${exports.dataDir}.`);
     }
     var data = _.map(files, (text, id) => {
-      return { id: text.split('.')[0], text: text.split('.')[0] };
+      fs.readFile(path.join(exports.dataDir, files), (err, rawText) => {
+        if (err) {
+          return callback(new Error(`Error reading data from ${id}`));
+        }
+        var text = rawText.toString();
+        return { id, text };
+      });
     });
     callback(null, data);
   });
@@ -59,14 +65,6 @@ exports.update = (id, text, callback) => {
       callback(err, {id, text} );
     });
   });
-
-  // var item = items[id];
-  // if (!item) {
-  //   callback(new Error(`No item with id: ${id}`));
-  // } else {
-  //   items[id] = text;
-  //   callback(null, { id, text });
-  // }
 };
 
 exports.delete = (id, callback) => {
