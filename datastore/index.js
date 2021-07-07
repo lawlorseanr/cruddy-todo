@@ -29,7 +29,7 @@ exports.readAll = (callback) => {
         var todoPath = path.join(exports.dataDir, `${file}`);
         return fs.promises.readFile(todoPath)
           .then( rawData => {
-            var id = file.split('.')[0];
+            var id = path.basename(file, '.txt');
             var text = rawData.toString();
             return {id, text};
           })
