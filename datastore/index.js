@@ -3,7 +3,7 @@ const path = require('path');
 const _ = require('underscore');
 const counter = require('./counter');
 
-var items = {};
+// var items = {};
 
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
@@ -23,41 +23,28 @@ exports.create = (text, callback) => {
 
 exports.readAll = (callback) => {
 
-  fs.readdir(exports.dataDir, (err, files) => {
-    if (err) {
-      return console.log(`Error reading files in ${exports.dataDir}.`);
-    }
-
-    var promises = [];
-    files.forEach( file => {
-
-      var promise = new Promise( (resolve, reject) => {
+  fs.promises.readdir(exports.dataDir)
+    .then( files => {
+      return _.map(files, file => {
         var todoPath = path.join(exports.dataDir, `${file}`);
-        fs.readFile(todoPath, (err, rawText) => {
-          if (err) {
-            reject(new Error(`Error reading ${file}`));
-          } else {
+        return fs.promises.readFile(todoPath)
+          .then( rawData => {
             var id = file.split('.')[0];
-            var text = rawText.toString();
-            resolve({id, text});
-          }
-
-        });
+            var text = rawData.toString();
+            return {id, text};
+          })
+          .catch( err => {
+            throw new Error(`Error reading ${file}`);
+          });
       });
-
-      promises.push(promise);
-
+    })
+    .then( promises => {
+      Promise.all(promises)
+        .then( todos => callback(null, todos));
+    })
+    .catch( err => {
+      callback(err);
     });
-
-    Promise.all(promises)
-      .then( todos => {
-        callback(null, todos);
-      })
-      .catch( err => {
-        callback(err);
-      });
-
-  });
 
 };
 
