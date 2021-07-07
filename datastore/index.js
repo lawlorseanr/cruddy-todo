@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('underscore');
 const counter = require('./counter');
+const expect = require('chai').expect;
 
 // var items = {};
 
@@ -36,6 +37,7 @@ exports.readAll = (callback) => {
           .catch( err => {
             throw new Error(`Error reading ${file}`);
           });
+
       });
     })
     .then( promises => {
@@ -51,7 +53,7 @@ exports.readAll = (callback) => {
 exports.readOne = (id, callback) => {
 
   var todoDir = path.join(exports.dataDir, `${id}.txt`);
-  new Promise( (resolve, reject) => {
+  var promise = new Promise( (resolve, reject) => {
     fs.readFile(todoDir, (err, rawText) => {
       if (err) {
         reject(err);
@@ -60,9 +62,16 @@ exports.readOne = (id, callback) => {
         resolve( {id, text} );
       }
     });
-  })
-    .then( todo => callback(null, todo))
+  });
+
+  promise
+    .then( todo => {
+      console.log(`todo (readOne): ${JSON.stringify(todo)}`);
+      callback(null, todo);
+    })
     .catch( err => callback(err));
+
+  return promise;
 
 };
 
