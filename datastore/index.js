@@ -15,7 +15,6 @@ exports.create = (text, callback) => {
       if (err) {
         return console.error(`Error writing ${id}.txt`);
       }
-      console.log(`Wrote ${id}.txt contents: "${text}"`);
       callback(null, { id, text });
     });
   });
@@ -28,10 +27,36 @@ exports.readAll = (callback) => {
     if (err) {
       return console.log(`Error reading files in ${exports.dataDir}.`);
     }
-    var data = _.map(files, (text, id) => {
-      return { id: text.split('.')[0], text: text.split('.')[0] };
+
+    var promises = [];
+    files.forEach( file => {
+
+      var promise = new Promise( (resolve, reject) => {
+        var todoPath = path.join(exports.dataDir, `${file}`);
+        fs.readFile(todoPath, (err, rawText) => {
+          if (err) {
+            reject(new Error(`Error reading ${file}`));
+          } else {
+            var id = file.split('.')[0];
+            var text = rawText.toString();
+            resolve({id, text});
+          }
+
+        });
+      });
+
+      promises.push(promise);
+
     });
-    callback(null, data);
+
+    Promise.all(promises)
+      .then( todos => {
+        callback(null, todos);
+      })
+      .catch( err => {
+        callback(err);
+      });
+
   });
 
 };

@@ -18,10 +18,8 @@ const zeroPaddedNumber = (num) => {
 const readCounter = (callback) => {
   fs.readFile(exports.counterFile, (err, fileData) => {
     if (err) {
-      console.log(`error: ${err}`);
       callback(err, 0);
     } else {
-      console.log(`counter read: ${Number(fileData)}`);
       callback(null, Number(fileData));
     }
   });
@@ -33,7 +31,6 @@ const writeCounter = (count, callback) => {
     if (err) {
       throw ('error writing counter');
     } else {
-      console.log(`counter wrote: ${counterString}`);
       callback(null, counterString);
     }
   });
