@@ -51,13 +51,18 @@ exports.readAll = (callback) => {
 exports.readOne = (id, callback) => {
 
   var todoDir = path.join(exports.dataDir, `${id}.txt`);
-  fs.readFile(todoDir, (err, rawText) => {
-    if (err) {
-      return callback(new Error(`No item with id: ${id}`));
-    }
-    var text = rawText.toString();
-    callback(null, {id, text});
-  });
+  new Promise( (resolve, reject) => {
+    fs.readFile(todoDir, (err, rawText) => {
+      if (err) {
+        reject(err);
+      } else {
+        var text = rawText.toString();
+        resolve( {id, text} );
+      }
+    });
+  })
+    .then( todo => callback(null, todo))
+    .catch( err => callback(err));
 
 };
 
